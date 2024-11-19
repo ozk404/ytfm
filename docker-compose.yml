@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  youtube_bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: youtube_bot
+    environment:
+      - DISPLAY=:99
+    volumes:
+      - ./:/app  # Montar el directorio actual en el contenedor para facilitar el desarrollo
+      - ./config.json:config.json  # Montar específicamente config.json
+    command: python3 main.py

@@ -1,5 +1,6 @@
 # Utilizar una imagen base más ligera
 FROM python:3.9-slim
+ENV PYTHONUNBUFFERED=1
 
 # Instalación de dependencias esenciales
 RUN apt-get update && \

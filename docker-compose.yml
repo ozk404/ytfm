@@ -8,6 +8,7 @@ services:
     container_name: youtube_bot
     environment:
       - DISPLAY=:99
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./:/app  # Montar el directorio actual en el contenedor para facilitar el desarrollo
     command: python3 /app/main.py

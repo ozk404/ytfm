@@ -17,15 +17,18 @@ RUN GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriv
     tar -xzf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/local/bin && \
     rm geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz
 
-# Instalación de Selenium
-RUN pip install selenium
-
 # Añadir los archivos de la aplicación al contenedor
 WORKDIR /app
 COPY . .
+
+# Copiar específicamente el archivo de configuración
+COPY config.json /app/config.json
+
+# Instalación de dependencias de Python desde requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Permitir ejecución del script principal
 RUN chmod +x /app/main.py
 
 # Comando para ejecutar el script
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "/app/main.py"]

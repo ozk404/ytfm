@@ -11,7 +11,7 @@ RUN apt-get update && \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Instalación de geckodriver
+# Instalación de geckodriver y añadirlo al PATH
 RUN GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")') && \
     wget -q https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz && \
     tar -xzf geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz -C /usr/local/bin && \
@@ -21,14 +21,14 @@ RUN GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriv
 WORKDIR /app
 COPY . .
 
-# Copiar específicamente el archivo de configuración
-COPY config.json /app/config.json
-
 # Instalación de dependencias de Python desde requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Permitir ejecución del script principal
 RUN chmod +x /app/main.py
+
+# Configurar PATH para geckodriver (asegurarse de que está en el PATH)
+ENV PATH="/usr/local/bin:${PATH}"
 
 # Comando para ejecutar el script
 ENTRYPOINT ["python3", "/app/main.py"]

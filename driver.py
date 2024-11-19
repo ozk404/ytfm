@@ -7,9 +7,7 @@ from selenium.webdriver.firefox.options import Options
 
 
 def get_driver(browser):
-    """Retrieve the appropriate WebDriver based on the specified browser."""
-    driver_path = os.path.join(os.path.dirname(__file__), "geckodriver")
-
+    driver_path = "/usr/local/bin/geckodriver"  # Ruta específica para geckodriver
     if browser.lower() in ("firefox", "ff", "mozilla", "firefox-esr"):
         options = Options()
         # Specify the binary location of Firefox

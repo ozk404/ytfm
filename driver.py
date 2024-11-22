@@ -38,10 +38,11 @@ class Bot:
         self.driver.get(self.website)
 
     def play_video(self):
-        """Click the play button on a YouTube video."""
+        """Click the play button on a YouTube video and confirm playback."""
         try:
             # Esperar a que la página cargue completamente
             self.wait.until(EC.presence_of_element_located((By.ID, "movie_player")))
+            
             # Encontrar el botón de reproducir
             play_button = self.wait.until(
                 EC.element_to_be_clickable(
@@ -49,6 +50,17 @@ class Bot:
                 )
             )
             play_button.click()
+            
+            # Esperar un poco para que el video comience a reproducirse
+            self.wait.until(EC.presence_of_element_located((By.CLASS_NAME, "playing-mode")))
+            
+            # Comprobar si el botón de reproducción ahora tiene "Pausa" en el aria-label
+            pause_button = self.driver.find_element(By.XPATH, "//button[@title='Pause (k)']")
+            if pause_button:
+                print("El video se está reproduciendo correctamente.")
+            else:
+                print("El video no se está reproduciendo.")
+                
         except Exception as e:
             print(f"Error while trying to play video: {e}")
 

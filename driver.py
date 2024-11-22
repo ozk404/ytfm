@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 
 
@@ -16,8 +17,10 @@ def get_driver(browser):
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         # Uncomment the next line to run Firefox in headless mode
-        options.add_argument("--headless")
-        return webdriver.Firefox(executable_path=driver_path, options=options)
+        # options.add_argument("--headless")
+        
+        service = Service(driver_path)
+        return webdriver.Firefox(service=service, options=options)
 
     raise RuntimeError(f"Unsupported browser: {browser}")
 
@@ -29,7 +32,7 @@ class Bot:
         """Initialize the bot with a browser and website URL."""
         self.driver = get_driver(browser)
         self.website = website
-        self.wait = WebDriverWait(self.driver, 10)  # Explicit wait for elements
+        self.wait = WebDriverWait(self.driver, 20)  # Explicit wait for elements
 
     def get_vid(self):
         """Navigate to the specified website."""
@@ -37,13 +40,18 @@ class Bot:
 
     def play_video(self):
         """Click the play button on a YouTube video."""
-        self.wait.until(EC.visibility_of_element_located((By.ID, "video-title")))
-        play_button = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//button[contains(@class, 'ytp-large-play-button')]")
+        try:
+            # Esperar a que la página cargue completamente
+            self.wait.until(EC.presence_of_element_located((By.ID, "movie_player")))
+            # Encontrar el botón de reproducir
+            play_button = self.wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[contains(@class, 'ytp-large-play-button')]")
+                )
             )
-        )
-        play_button.click()
+            play_button.click()
+        except Exception as e:
+            print(f"Error while trying to play video: {e}")
 
     def clear_cache(self):
         """Clear browser cookies."""
@@ -63,7 +71,6 @@ class Bot:
     def new_tab(self):
         """Open a new blank tab."""
         self.driver.execute_script("window.open('about:blank');")
-
 
     def close(self):
         """Close the browser session."""

@@ -16,7 +16,7 @@ def get_driver(browser):
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         # Uncomment the next line to run Firefox in headless mode
-        options.add_argument("headless")
+        options.add_argument("--headless")
         
         # Usando executable_path en lugar de service para versiones más antiguas de Selenium
         return webdriver.Firefox(executable_path=driver_path, options=options)
